@@ -1,0 +1,134 @@
+<div class="container mt-4">
+
+  <h2 class="mb-4">Create New Listing</h2>
+
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="card p-4">
+
+        <div class="mb-3">
+          <label class="form-label">Title *</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="e.g., Beautiful 2-Bedroom Apartment"
+            formControlName="title"
+            [ngClass]="{'is-invalid': propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched">
+            Title is required
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description *</label>
+          <textarea
+            class="form-control"
+            placeholder="Describe your property..."
+            formControlName="description"
+            rows="4"
+            [ngClass]="{'is-invalid': propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched}"
+          ></textarea>
+          <div class="invalid-feedback" *ngIf="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched">
+            Description is required
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">City *</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g., New York"
+              formControlName="city"
+              [ngClass]="{'is-invalid': propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched}"
+            >
+            <div class="invalid-feedback" *ngIf="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched">
+              City is required
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Country *</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g., USA"
+              formControlName="country"
+              [ngClass]="{'is-invalid': propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched}"
+            >
+            <div class="invalid-feedback" *ngIf="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched">
+              Country is required
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Price *</label>
+            <input
+              type="number"
+              class="form-control"
+              placeholder="0.00"
+              formControlName="price"
+              [ngClass]="{'is-invalid': propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched}"
+            >
+            <div class="invalid-feedback" *ngIf="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched">
+              Valid price is required
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Property Type *</label>
+            <select
+              class="form-control"
+              formControlName="propertyType"
+              [ngClass]="{'is-invalid': propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched}"
+            >
+              <option value="">Select Type</option>
+              <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched">
+              Property type is required
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Image URLs (comma-separated)</label>
+          <textarea
+            class="form-control"
+            placeholder="e.g., https://example.com/image1.jpg, https://example.com/image2.jpg"
+            formControlName="imageUrls"
+            rows="3"
+          ></textarea>
+          <small class="text-muted">Separate multiple URLs with commas</small>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="propertyForm.invalid || loading"
+          >
+            {{ loading ? 'Creating...' : 'Create Listing' }}
+          </button>
+          <a routerLink="/my-listings" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

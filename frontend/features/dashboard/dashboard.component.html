@@ -1,0 +1,335 @@
+<!-- ===== NAVBAR ===== -->
+<nav class="dash-nav">
+  <div class="dash-nav-inner">
+    <a href="/" class="dash-brand">
+      <span>🏡</span>
+      <span class="dash-brand-name">PropSpace</span>
+    </a>
+    <div class="dash-nav-links">
+      <a routerLink="/properties" class="dash-nav-link">Browse</a>
+      <a routerLink="/my-listings" class="dash-nav-link">My Listings</a>
+      <a routerLink="/create-property" class="dash-nav-link dash-btn-create">+ New Listing</a>
+      <a routerLink="/profile" class="dash-nav-link">Profile</a>
+      <button (click)="logout()" class="dash-logout-btn">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO BANNER ===== -->
+<section class="dash-hero">
+  <img src="images/living-room.jpg" alt="Dashboard banner" class="dash-hero-img" />
+  <div class="dash-hero-overlay">
+    <div class="dash-hero-text">
+      <p class="dash-welcome-label">Dashboard</p>
+      <h1 class="dash-welcome-title">Welcome back{{ userName ? ', ' + userName : '' }}! 👋</h1>
+      <p class="dash-welcome-sub">Manage your property listings and reach thousands of buyers</p>
+      <a routerLink="/create-property" class="dash-hero-cta">+ Create New Listing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="dash-stats-section">
+  <div class="dash-stats-inner">
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">🏠</div>
+      <div class="dash-stat-info">
+        <strong>{{ myListings.length }}</strong>
+        <span>Your Listings</span>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">👁️</div>
+      <div class="dash-stat-info">
+        <strong>1,240</strong>
+        <span>Total Views</span>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">💬</div>
+      <div class="dash-stat-info">
+        <strong>8</strong>
+        <span>Enquiries</span>
+      </div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="dash-stat-icon">⭐</div>
+      <div class="dash-stat-info">
+        <strong>4.9</strong>
+        <span>Avg. Rating</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LISTINGS SECTION ===== -->
+<section class="dash-listings-section">
+  <div class="dash-listings-inner">
+
+    <div class="dash-section-header">
+      <h2 class="dash-section-title">Your Listings</h2>
+      <a routerLink="/create-property" class="dash-add-btn">+ Add Property</a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="dash-loading">
+      <div class="dash-spinner"></div>
+      <p>Loading your listings...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error && !loading" class="dash-error">⚠️ {{ error }}</div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && myListings.length === 0" class="dash-empty">
+      <img src="images/house-exterior.jpg" alt="No listings yet" class="dash-empty-img" />
+      <div class="dash-empty-text">
+        <h3>No listings yet</h3>
+        <p>Start by adding your first property listing</p>
+        <a routerLink="/create-property" class="dash-cta-btn">Create First Listing →</a>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div *ngIf="!loading && myListings.length > 0" class="dash-grid">
+      <app-property-card
+        *ngFor="let property of myListings; let i = index"
+        [property]="property"
+        [style.animation-delay]="(i * 0.1) + 's'"
+      ></app-property-card>
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* Nav */
+.dash-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,20,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.dash-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-size: 1.3rem;
+}
+.dash-brand-name {
+  font-weight: 800;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dash-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.dash-nav-link {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.dash-nav-link:hover { color: #f59e0b; }
+.dash-btn-create {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white !important;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-weight: 600;
+}
+.dash-logout-btn {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.4);
+  color: #ef4444;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dash-logout-btn:hover { background: #ef4444; color: white; }
+
+/* Hero */
+.dash-hero {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+}
+.dash-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+.dash-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(5,5,15,0.8), rgba(10,10,30,0.6));
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+}
+.dash-hero-text {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+.dash-welcome-label {
+  color: #f59e0b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.dash-welcome-title {
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 900;
+  color: white;
+  margin: 0 0 0.5rem;
+}
+.dash-welcome-sub {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+.dash-hero-cta {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  text-decoration: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: opacity 0.2s, transform 0.2s;
+  display: inline-block;
+}
+.dash-hero-cta:hover { opacity: 0.9; transform: translateY(-2px); color: white; }
+
+/* Stats */
+.dash-stats-section {
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dash-stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.dash-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  transition: box-shadow 0.2s;
+}
+.dash-stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.dash-stat-icon { font-size: 1.75rem; }
+.dash-stat-info { display: flex; flex-direction: column; }
+.dash-stat-info strong {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0a0a14;
+  line-height: 1;
+}
+.dash-stat-info span { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+
+/* Listings */
+.dash-listings-section { background: #f0f2f5; padding: 3rem 0; min-height: 40vh; }
+.dash-listings-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+.dash-section-title { font-size: 1.75rem; font-weight: 800; color: #0a0a14; margin: 0; }
+.dash-add-btn {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+.dash-add-btn:hover { opacity: 0.9; color: white; }
+.dash-loading { text-align: center; padding: 4rem 0; }
+.dash-spinner {
+  width: 48px; height: 48px;
+  border: 4px solid rgba(245,158,11,0.2);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.dash-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  border-left: 4px solid #dc2626;
+}
+.dash-empty {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+.dash-empty-img { width: 320px; height: 220px; object-fit: cover; flex-shrink: 0; }
+.dash-empty-text { padding: 2rem; }
+.dash-empty-text h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.dash-empty-text p { color: #666; margin-bottom: 1.5rem; }
+.dash-cta-btn {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+.dash-cta-btn:hover { opacity: 0.9; color: white; }
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .dash-stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .dash-empty { flex-direction: column; }
+  .dash-empty-img { width: 100%; }
+  .dash-nav-links { gap: 0.5rem; }
+}
+</style>

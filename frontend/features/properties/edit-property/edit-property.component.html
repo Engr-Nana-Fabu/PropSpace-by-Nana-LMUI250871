@@ -1,0 +1,56 @@
+<div class="container mt-4 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>Edit Property</h2>
+      <p class="text-muted mb-0">Update listing details and save your changes.</p>
+    </div>
+    <a routerLink="/my-listings" class="btn btn-outline-secondary">Back to My Listings</a>
+  </div>
+
+  <div *ngIf="loading" class="alert alert-info">Loading property...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <form *ngIf="!loading" [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-sm">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input class="form-control" formControlName="title" placeholder="Property title" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="4" formControlName="description" placeholder="Describe the property"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">City</label>
+        <input class="form-control" formControlName="city" placeholder="City" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Country</label>
+        <input class="form-control" formControlName="country" placeholder="Country" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Price</label>
+        <input class="form-control" type="number" formControlName="price" placeholder="0" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Property Type</label>
+        <select class="form-select" formControlName="propertyType">
+          <option value="">Select type</option>
+          <option value="Apartment">Apartment</option>
+          <option value="House">House</option>
+          <option value="Townhouse">Townhouse</option>
+          <option value="Studio">Studio</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="propertyForm.invalid || loading">
+      Save Changes
+    </button>
+  </form>
+</div>

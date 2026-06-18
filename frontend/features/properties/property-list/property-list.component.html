@@ -1,0 +1,569 @@
+<!-- ===== NAVBAR ===== -->
+<nav class="ps-navbar">
+  <div class="ps-navbar-inner">
+    <a href="/" class="ps-brand">
+      <span class="ps-brand-icon">🏡</span>
+      <span class="ps-brand-name">PropSpace</span>
+    </a>
+    <div class="ps-nav-links" [class.open]="menuOpen">
+      <a routerLink="/properties" class="ps-nav-link active">Browse</a>
+      <a routerLink="/login" class="ps-nav-link">Login</a>
+      <a routerLink="/register" class="ps-btn-nav">List Property</a>
+    </div>
+    <button class="ps-hamburger" (click)="menuOpen = !menuOpen" id="menuToggle">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="ps-hero">
+  <div class="ps-hero-bg">
+    <img src="images/townhouse.jpg" alt="PropSpace hero background" class="ps-hero-img" />
+    <div class="ps-hero-overlay"></div>
+  </div>
+  <div class="ps-hero-content">
+    <p class="ps-hero-eyebrow">South Africa's Premium Property Platform</p>
+    <h1 class="ps-hero-title">Find Your Dream<br><span class="ps-hero-accent">Property</span></h1>
+    <p class="ps-hero-sub">Browse thousands of homes, apartments & townhouses across South Africa</p>
+
+    <!-- Search Bar -->
+    <div class="ps-search-bar">
+      <div class="ps-search-input-wrap">
+        <span class="ps-search-icon">🔍</span>
+        <input
+          id="searchInput"
+          type="text"
+          class="ps-search-input"
+          placeholder="Search by city or keyword..."
+          [(ngModel)]="searchCity"
+          (input)="applyFilters()"
+        />
+      </div>
+      <select id="typeFilter" class="ps-search-select" [(ngModel)]="selectedType" (change)="applyFilters()">
+        <option value="">All Types</option>
+        <option value="House">House</option>
+        <option value="Apartment">Apartment</option>
+        <option value="Townhouse">Townhouse</option>
+      </select>
+      <button class="ps-search-btn" id="searchBtn" (click)="applyFilters()">Search</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="ps-hero-stats">
+      <div class="ps-stat"><strong>500+</strong><span>Properties</span></div>
+      <div class="ps-stat-divider"></div>
+      <div class="ps-stat"><strong>8</strong><span>Cities</span></div>
+      <div class="ps-stat-divider"></div>
+      <div class="ps-stat"><strong>98%</strong><span>Satisfied Clients</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED IMAGES STRIP ===== -->
+<section class="ps-strip">
+  <div class="ps-strip-inner">
+    <div class="ps-strip-item">
+      <img src="images/living-room.jpg" alt="Living room" />
+      <span>Interiors</span>
+    </div>
+    <div class="ps-strip-item">
+      <img src="images/townhouse.jpg" alt="Townhouse" />
+      <span>Townhouses</span>
+    </div>
+    <div class="ps-strip-item">
+      <img src="images/house-exterior.jpg" alt="House exterior" />
+      <span>Family Homes</span>
+    </div>
+    <div class="ps-strip-item">
+      <img src="images/property2.png" alt="Luxury" />
+      <span>Luxury</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LISTINGS SECTION ===== -->
+<section class="ps-listings" id="listings">
+  <div class="ps-listings-inner">
+
+    <!-- Section Header -->
+    <div class="ps-section-header">
+      <div>
+        <h2 class="ps-section-title">Available Properties</h2>
+        <p class="ps-section-sub">{{ filteredProperties.length }} {{ filteredProperties.length === 1 ? 'property' : 'properties' }} found</p>
+      </div>
+      <div class="ps-filter-row">
+        <select id="minPriceFilter" class="ps-filter-select" [(ngModel)]="minPrice" (change)="applyFilters()">
+          <option [ngValue]="null">Min Price</option>
+          <option [ngValue]="500000">R 500K</option>
+          <option [ngValue]="1000000">R 1M</option>
+          <option [ngValue]="2000000">R 2M</option>
+          <option [ngValue]="3000000">R 3M</option>
+        </select>
+        <select id="maxPriceFilter" class="ps-filter-select" [(ngModel)]="maxPrice" (change)="applyFilters()">
+          <option [ngValue]="null">Max Price</option>
+          <option [ngValue]="1000000">R 1M</option>
+          <option [ngValue]="2000000">R 2M</option>
+          <option [ngValue]="3000000">R 3M</option>
+          <option [ngValue]="5000000">R 5M</option>
+        </select>
+        <button id="clearFiltersBtn" class="ps-clear-btn" (click)="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="ps-loading">
+      <div class="ps-spinner"></div>
+      <p>Loading beautiful properties...</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error && !loading" class="ps-error">
+      <span>⚠️</span> {{ error }}
+    </div>
+
+    <!-- No results -->
+    <div *ngIf="!loading && filteredProperties.length === 0" class="ps-empty">
+      <div class="ps-empty-icon">🏠</div>
+      <h3>No properties found</h3>
+      <p>Try adjusting your search filters</p>
+      <button class="ps-clear-btn" (click)="clearFilters()">Reset Filters</button>
+    </div>
+
+    <!-- Grid -->
+    <div *ngIf="!loading && filteredProperties.length > 0" class="ps-grid">
+      <app-property-card
+        *ngFor="let property of filteredProperties; let i = index"
+        [property]="property"
+        [style.animation-delay]="(i * 0.08) + 's'"
+      ></app-property-card>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="ps-footer">
+  <div class="ps-footer-inner">
+    <div class="ps-footer-brand">
+      <span class="ps-brand-icon">🏡</span>
+      <strong>PropSpace</strong>
+    </div>
+    <p class="ps-footer-copy">© 2025 PropSpace. South Africa's trusted property platform.</p>
+    <div class="ps-footer-links">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* ---- Navbar ---- */
+.ps-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 20, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.ps-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ps-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+.ps-brand-icon { font-size: 1.5rem; }
+.ps-brand-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.ps-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.ps-nav-link {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.ps-nav-link:hover, .ps-nav-link.active { color: #f59e0b; }
+.ps-btn-nav {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  padding: 0.45rem 1.2rem;
+  border-radius: 100px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.ps-btn-nav:hover { opacity: 0.9; transform: translateY(-1px); }
+.ps-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.ps-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+}
+
+/* ---- Hero ---- */
+.ps-hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ps-hero-bg {
+  position: absolute;
+  inset: 0;
+}
+.ps-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ps-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(5,5,15,0.85) 0%,
+    rgba(10,10,30,0.7) 50%,
+    rgba(5,5,15,0.75) 100%
+  );
+}
+.ps-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 800px;
+  width: 100%;
+}
+.ps-hero-eyebrow {
+  color: #f59e0b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+.ps-hero-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+.ps-hero-accent {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ps-hero-sub {
+  color: rgba(255,255,255,0.75);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ---- Search Bar ---- */
+.ps-search-bar {
+  display: flex;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.ps-search-input-wrap {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.ps-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 1rem;
+}
+.ps-search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 0.7rem 0.75rem 0.7rem 2.5rem;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ps-search-input::placeholder { color: rgba(255,255,255,0.5); }
+.ps-search-input:focus { border-color: #f59e0b; }
+.ps-search-select {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  min-width: 130px;
+}
+.ps-search-select option { background: #1a1a2e; color: white; }
+.ps-search-btn {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.ps-search-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ---- Stats ---- */
+.ps-hero-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.ps-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+.ps-stat strong { font-size: 1.5rem; font-weight: 800; color: #f59e0b; }
+.ps-stat span { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+.ps-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* ---- Image Strip ---- */
+.ps-strip {
+  background: #0a0a14;
+  padding: 2rem 0;
+}
+.ps-strip-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.ps-strip-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+}
+.ps-strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.ps-strip-item:hover img { transform: scale(1.08); }
+.ps-strip-item span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: white;
+  padding: 1rem 0.75rem 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---- Listings ---- */
+.ps-listings {
+  background: #f0f2f5;
+  padding: 4rem 0;
+  min-height: 60vh;
+}
+.ps-listings-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.ps-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.ps-section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0a0a14;
+  margin: 0;
+}
+.ps-section-sub {
+  color: #666;
+  margin: 0.25rem 0 0;
+}
+.ps-filter-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ps-filter-select {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  color: #333;
+  outline: none;
+}
+.ps-clear-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+.ps-clear-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+/* ---- Grid ---- */
+.ps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+/* ---- States ---- */
+.ps-loading {
+  text-align: center;
+  padding: 5rem 0;
+}
+.ps-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(245,158,11,0.2);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ps-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #dc2626;
+}
+.ps-empty {
+  text-align: center;
+  padding: 5rem 0;
+  color: #666;
+}
+.ps-empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.ps-empty h3 { font-size: 1.4rem; color: #333; margin-bottom: 0.5rem; }
+
+/* ---- Footer ---- */
+.ps-footer {
+  background: #0a0a14;
+  color: rgba(255,255,255,0.6);
+  padding: 2rem 0;
+}
+.ps-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.ps-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 1.1rem;
+}
+.ps-footer-copy { font-size: 0.85rem; }
+.ps-footer-links { display: flex; gap: 1.5rem; }
+.ps-footer-links a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+.ps-footer-links a:hover { color: #f59e0b; }
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .ps-hamburger { display: flex; }
+  .ps-nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,20,0.98);
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .ps-nav-links.open { display: flex; }
+  .ps-strip-inner { grid-template-columns: repeat(2, 1fr); }
+  .ps-section-header { flex-direction: column; }
+  .ps-footer-inner { flex-direction: column; text-align: center; }
+}
+</style>

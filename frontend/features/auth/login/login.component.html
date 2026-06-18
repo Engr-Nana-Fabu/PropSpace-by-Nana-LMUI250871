@@ -1,0 +1,298 @@
+<div class="auth-page">
+
+  <!-- Left: Image Panel -->
+  <div class="auth-image-panel">
+    <img src="images/house-exterior.jpg" alt="Beautiful property" class="auth-bg-img" />
+    <div class="auth-image-overlay">
+      <div class="auth-image-content">
+        <span class="auth-logo-mark">🏡</span>
+        <h2 class="auth-tagline">Find Your Perfect Home</h2>
+        <p class="auth-tagline-sub">South Africa's premier property listing platform</p>
+        <div class="auth-img-stats">
+          <div class="auth-stat">
+            <strong>500+</strong>
+            <span>Properties</span>
+          </div>
+          <div class="auth-stat">
+            <strong>8</strong>
+            <span>Cities</span>
+          </div>
+          <div class="auth-stat">
+            <strong>5★</strong>
+            <span>Rated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Form Panel -->
+  <div class="auth-form-panel">
+    <div class="auth-form-inner">
+
+      <!-- Brand -->
+      <a href="/" class="auth-brand">
+        <span>🏡</span>
+        <span class="auth-brand-name">PropSpace</span>
+      </a>
+
+      <h1 class="auth-form-title">Welcome Back</h1>
+      <p class="auth-form-sub">Sign in to manage your listings</p>
+
+      <!-- Error -->
+      <div *ngIf="error" class="auth-alert-error">
+        <span>⚠️</span> {{ error }}
+        <button type="button" class="auth-alert-close" (click)="error = ''">✕</button>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form" id="loginForm">
+
+        <div class="auth-field">
+          <label class="auth-label" for="emailInput">Email Address</label>
+          <input
+            id="emailInput"
+            type="email"
+            class="auth-input"
+            formControlName="email"
+            placeholder="you@example.com"
+            [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          />
+          <div class="auth-error-msg" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-label" for="passwordInput">Password</label>
+          <input
+            id="passwordInput"
+            type="password"
+            class="auth-input"
+            formControlName="password"
+            placeholder="••••••••"
+            [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <div class="auth-error-msg" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            Password is required
+          </div>
+        </div>
+
+        <button
+          id="loginSubmitBtn"
+          type="submit"
+          class="auth-submit-btn"
+          [disabled]="loading || loginForm.invalid"
+        >
+          <span *ngIf="!loading">Sign In →</span>
+          <span *ngIf="loading" class="auth-btn-loading">
+            <span class="auth-btn-spinner"></span> Signing In...
+          </span>
+        </button>
+
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <a routerLink="/register" class="auth-switch-link">Create one free</a>
+      </p>
+
+      <div class="auth-divider">
+        <span>Browse without signing in</span>
+      </div>
+      <a routerLink="/properties" class="auth-browse-btn">View Properties →</a>
+
+    </div>
+  </div>
+
+</div>
+
+<style>
+.auth-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left image panel */
+.auth-image-panel {
+  flex: 1;
+  position: relative;
+  display: none;
+}
+@media (min-width: 900px) {
+  .auth-image-panel { display: block; }
+}
+.auth-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.auth-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(5,5,15,0.75) 0%, rgba(10,10,30,0.55) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem;
+}
+.auth-image-content { color: white; }
+.auth-logo-mark { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+.auth-tagline { font-size: 2rem; font-weight: 800; margin: 0 0 0.5rem; }
+.auth-tagline-sub { color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 2rem; }
+.auth-img-stats {
+  display: flex;
+  gap: 2rem;
+}
+.auth-stat { display: flex; flex-direction: column; }
+.auth-stat strong { font-size: 1.5rem; font-weight: 800; color: #f59e0b; }
+.auth-stat span { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+
+/* Right form panel */
+.auth-form-panel {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+@media (max-width: 900px) {
+  .auth-form-panel { max-width: 100%; min-height: 100vh; }
+}
+.auth-form-inner {
+  width: 100%;
+  max-width: 380px;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+}
+.auth-brand-name {
+  font-weight: 800;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.auth-form-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #0a0a14;
+  margin: 0 0 0.25rem;
+}
+.auth-form-sub {
+  color: #888;
+  font-size: 0.95rem;
+  margin: 0 0 2rem;
+}
+.auth-alert-error {
+  background: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.auth-alert-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+.auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.auth-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.auth-label { font-size: 0.875rem; font-weight: 600; color: #333; }
+.auth-input {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafafa;
+}
+.auth-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+  background: white;
+}
+.auth-input.invalid { border-color: #ef4444; }
+.auth-error-msg { font-size: 0.8rem; color: #ef4444; }
+.auth-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+.auth-submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-btn-loading { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.auth-btn-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.auth-switch {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin: 1.5rem 0 1rem;
+}
+.auth-switch-link {
+  color: #f59e0b;
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-switch-link:hover { text-decoration: underline; }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  color: #ccc;
+  font-size: 0.8rem;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #eee;
+}
+.auth-browse-btn {
+  display: block;
+  text-align: center;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0.7rem;
+  color: #555;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.auth-browse-btn:hover { border-color: #f59e0b; color: #f59e0b; }
+</style>
