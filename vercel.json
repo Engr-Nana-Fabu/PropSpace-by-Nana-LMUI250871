@@ -4,11 +4,11 @@
   "outputDirectory": "frontend/dist/frontend/browser",
   "rewrites": [
     {
-      "source": "/api/:path*",
+      "source": "/_/backend/:path*",
       "destination": "/api/index"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/((?!_/backend).*)",
       "destination": "/index.html"
     }
   ],
