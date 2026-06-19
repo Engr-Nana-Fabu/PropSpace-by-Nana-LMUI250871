@@ -1,134 +1,660 @@
-<div class="container mt-4">
+<div class="pf-page">
 
-  <h2 class="mb-4">Create New Listing</h2>
-
-  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ successMessage }}
+  <!-- Page Header -->
+  <div class="pf-header">
+    <div class="pf-header-content">
+      <div class="pf-header-nav">
+        <a routerLink="/my-listings" class="pf-back-btn">
+          <span>←</span> My Listings
+        </a>
+      </div>
+      <div class="pf-title-block">
+        <div class="pf-title-icon">➕</div>
+        <div>
+          <h1 class="pf-page-title">Create New Listing</h1>
+          <p class="pf-page-sub">Fill in the details below to publish your property on PropSpace</p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
-    {{ error }}
-  </div>
+  <!-- Content -->
+  <div class="pf-container">
 
-  <div class="row">
-    <div class="col-md-8">
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="pf-alert pf-alert-success">
+      <span class="pf-alert-icon">✅</span>
+      <div>
+        <strong>Property created!</strong><br>
+        <span>{{ successMessage }} Redirecting to your listings...</span>
+      </div>
+    </div>
 
-      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="card p-4">
+    <!-- Error Alert -->
+    <div *ngIf="error" class="pf-alert pf-alert-error">
+      <span class="pf-alert-icon">⚠️</span>
+      <span>{{ error }}</span>
+      <button class="pf-alert-close" (click)="error = ''">✕</button>
+    </div>
 
-        <div class="mb-3">
-          <label class="form-label">Title *</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="e.g., Beautiful 2-Bedroom Apartment"
-            formControlName="title"
-            [ngClass]="{'is-invalid': propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched}"
-          >
-          <div class="invalid-feedback" *ngIf="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched">
-            Title is required
-          </div>
-        </div>
+    <div class="pf-layout">
 
-        <div class="mb-3">
-          <label class="form-label">Description *</label>
-          <textarea
-            class="form-control"
-            placeholder="Describe your property..."
-            formControlName="description"
-            rows="4"
-            [ngClass]="{'is-invalid': propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched}"
-          ></textarea>
-          <div class="invalid-feedback" *ngIf="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched">
-            Description is required
-          </div>
-        </div>
+      <!-- Main Form -->
+      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="pf-form-col" id="createPropertyForm">
 
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">City *</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g., New York"
-              formControlName="city"
-              [ngClass]="{'is-invalid': propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched}"
-            >
-            <div class="invalid-feedback" *ngIf="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched">
-              City is required
+        <!-- Basic Info Card -->
+        <div class="pf-card">
+          <div class="pf-card-header">
+            <div class="pf-card-icon">📋</div>
+            <div>
+              <h2 class="pf-card-title">Basic Information</h2>
+              <p class="pf-card-sub">Title and description for your listing</p>
             </div>
           </div>
+          <div class="pf-card-body">
 
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Country *</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g., USA"
-              formControlName="country"
-              [ngClass]="{'is-invalid': propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched}"
-            >
-            <div class="invalid-feedback" *ngIf="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched">
-              Country is required
+            <div class="pf-field">
+              <label class="pf-label" for="pf-title">
+                Property Title <span class="pf-req">*</span>
+              </label>
+              <input
+                id="pf-title"
+                type="text"
+                class="pf-input"
+                placeholder="e.g., Beautiful 2-Bedroom Apartment in Yaoundé"
+                formControlName="title"
+                [class.pf-input-error]="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched"
+              />
+              <div class="pf-error" *ngIf="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched">
+                Title is required
+              </div>
+            </div>
+
+            <div class="pf-field">
+              <label class="pf-label" for="pf-desc">
+                Description <span class="pf-req">*</span>
+              </label>
+              <textarea
+                id="pf-desc"
+                class="pf-input pf-textarea"
+                placeholder="Describe your property — features, amenities, nearby landmarks..."
+                formControlName="description"
+                rows="5"
+                [class.pf-input-error]="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched"
+              ></textarea>
+              <div class="pf-error" *ngIf="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched">
+                Description is required
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Location & Type Card -->
+        <div class="pf-card">
+          <div class="pf-card-header">
+            <div class="pf-card-icon">📍</div>
+            <div>
+              <h2 class="pf-card-title">Location & Type</h2>
+              <p class="pf-card-sub">Where is the property located?</p>
+            </div>
+          </div>
+          <div class="pf-card-body">
+
+            <div class="pf-row">
+              <div class="pf-field">
+                <label class="pf-label" for="pf-city">
+                  City <span class="pf-req">*</span>
+                </label>
+                <input
+                  id="pf-city"
+                  type="text"
+                  class="pf-input"
+                  placeholder="e.g., Yaoundé, Douala, Bamenda"
+                  formControlName="city"
+                  [class.pf-input-error]="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched"
+                />
+                <div class="pf-error" *ngIf="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched">
+                  City is required
+                </div>
+              </div>
+
+              <div class="pf-field">
+                <label class="pf-label" for="pf-country">
+                  Country <span class="pf-req">*</span>
+                </label>
+                <input
+                  id="pf-country"
+                  type="text"
+                  class="pf-input"
+                  placeholder="Cameroon"
+                  formControlName="country"
+                  [class.pf-input-error]="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched"
+                />
+                <div class="pf-error" *ngIf="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched">
+                  Country is required
+                </div>
+              </div>
+            </div>
+
+            <div class="pf-row">
+              <div class="pf-field">
+                <label class="pf-label" for="pf-price">
+                  Price (FCFA) <span class="pf-req">*</span>
+                </label>
+                <div class="pf-price-wrap">
+                  <span class="pf-price-badge">FCFA</span>
+                  <input
+                    id="pf-price"
+                    type="number"
+                    class="pf-input pf-price-input"
+                    placeholder="0"
+                    formControlName="price"
+                    [class.pf-input-error]="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched"
+                  />
+                </div>
+                <div class="pf-error" *ngIf="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched">
+                  A valid price is required
+                </div>
+              </div>
+
+              <div class="pf-field">
+                <label class="pf-label" for="pf-type">
+                  Property Type <span class="pf-req">*</span>
+                </label>
+                <select
+                  id="pf-type"
+                  class="pf-input pf-select"
+                  formControlName="propertyType"
+                  [class.pf-input-error]="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched"
+                >
+                  <option value="">Select a type...</option>
+                  <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+                  <option value="Townhouse">Townhouse</option>
+                  <option value="Villa">Villa</option>
+                  <option value="Land">Land</option>
+                </select>
+                <div class="pf-error" *ngIf="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched">
+                  Property type is required
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Images Card -->
+        <div class="pf-card">
+          <div class="pf-card-header">
+            <div class="pf-card-icon">🖼️</div>
+            <div>
+              <h2 class="pf-card-title">Property Images</h2>
+              <p class="pf-card-sub">Add image URLs to showcase your property</p>
+            </div>
+          </div>
+          <div class="pf-card-body">
+            <div class="pf-field">
+              <label class="pf-label" for="pf-images">Image URLs</label>
+              <textarea
+                id="pf-images"
+                class="pf-input pf-textarea"
+                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                formControlName="imageUrls"
+                rows="3"
+              ></textarea>
+              <p class="pf-hint">💡 Separate multiple image URLs with commas</p>
             </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Price *</label>
-            <input
-              type="number"
-              class="form-control"
-              placeholder="0.00"
-              formControlName="price"
-              [ngClass]="{'is-invalid': propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched}"
-            >
-            <div class="invalid-feedback" *ngIf="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched">
-              Valid price is required
-            </div>
-          </div>
-
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Property Type *</label>
-            <select
-              class="form-control"
-              formControlName="propertyType"
-              [ngClass]="{'is-invalid': propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched}"
-            >
-              <option value="">Select Type</option>
-              <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
-            </select>
-            <div class="invalid-feedback" *ngIf="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched">
-              Property type is required
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Image URLs (comma-separated)</label>
-          <textarea
-            class="form-control"
-            placeholder="e.g., https://example.com/image1.jpg, https://example.com/image2.jpg"
-            formControlName="imageUrls"
-            rows="3"
-          ></textarea>
-          <small class="text-muted">Separate multiple URLs with commas</small>
-        </div>
-
-        <div class="d-flex gap-2">
+        <!-- Action Buttons -->
+        <div class="pf-actions">
+          <a routerLink="/my-listings" class="pf-btn-cancel">Cancel</a>
           <button
+            id="createListingBtn"
             type="submit"
-            class="btn btn-primary"
+            class="pf-btn-submit"
             [disabled]="propertyForm.invalid || loading"
           >
-            {{ loading ? 'Creating...' : 'Create Listing' }}
+            <span *ngIf="!loading">🚀 Publish Listing</span>
+            <span *ngIf="loading" class="pf-btn-loading">
+              <span class="pf-spinner"></span> Creating...
+            </span>
           </button>
-          <a routerLink="/my-listings" class="btn btn-secondary">Cancel</a>
         </div>
 
       </form>
 
-    </div>
-  </div>
+      <!-- Sidebar Tips -->
+      <aside class="pf-sidebar">
 
+        <div class="pf-tip-card">
+          <div class="pf-tip-icon">💡</div>
+          <h3 class="pf-tip-title">Listing Tips</h3>
+          <ul class="pf-tip-list">
+            <li>Use a clear, descriptive title with location</li>
+            <li>Write detailed descriptions to attract buyers</li>
+            <li>Add multiple high-quality images</li>
+            <li>Price competitively for your area</li>
+          </ul>
+        </div>
+
+        <div class="pf-stat-card">
+          <div class="pf-stat-row">
+            <div class="pf-stat">
+              <strong>500+</strong>
+              <span>Active Listings</span>
+            </div>
+            <div class="pf-stat">
+              <strong>8</strong>
+              <span>Cities</span>
+            </div>
+          </div>
+          <p class="pf-stat-desc">Join hundreds of property owners listing on PropSpace Cameroon</p>
+        </div>
+
+        <div class="pf-checklist-card">
+          <h3 class="pf-tip-title">✅ Before You Publish</h3>
+          <ul class="pf-checklist">
+            <li>
+              <span class="pf-check" [class.pf-check-done]="propertyForm.get('title')?.valid">
+                {{ propertyForm.get('title')?.valid ? '✓' : '○' }}
+              </span>
+              Property title added
+            </li>
+            <li>
+              <span class="pf-check" [class.pf-check-done]="propertyForm.get('description')?.valid">
+                {{ propertyForm.get('description')?.valid ? '✓' : '○' }}
+              </span>
+              Description written
+            </li>
+            <li>
+              <span class="pf-check" [class.pf-check-done]="propertyForm.get('city')?.valid">
+                {{ propertyForm.get('city')?.valid ? '✓' : '○' }}
+              </span>
+              City specified
+            </li>
+            <li>
+              <span class="pf-check" [class.pf-check-done]="propertyForm.get('price')?.valid">
+                {{ propertyForm.get('price')?.valid ? '✓' : '○' }}
+              </span>
+              Price set
+            </li>
+            <li>
+              <span class="pf-check" [class.pf-check-done]="propertyForm.get('propertyType')?.valid">
+                {{ propertyForm.get('propertyType')?.valid ? '✓' : '○' }}
+              </span>
+              Type selected
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+
+  </div>
 </div>
+
+<style>
+/* ========== Page Layout ========== */
+.pf-page {
+  min-height: 100vh;
+  background: #f4f6fb;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* ========== Header ========== */
+.pf-header {
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0d1b4b 100%);
+  padding: 2rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.pf-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 75% 20%, rgba(99,102,241,0.1) 0%, transparent 55%);
+}
+.pf-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.pf-header-nav {
+  margin-bottom: 1.5rem;
+}
+.pf-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.pf-back-btn:hover { color: #f59e0b; border-color: rgba(245,158,11,0.4); }
+.pf-title-block {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.pf-title-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 12px rgba(245,158,11,0.5));
+}
+.pf-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.5px;
+}
+.pf-page-sub {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ========== Container ========== */
+.pf-container {
+  max-width: 1200px;
+  margin: -1.5rem auto 3rem;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ========== Alerts ========== */
+.pf-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.pf-alert-success {
+  background: #ecfdf5;
+  border-left: 4px solid #10b981;
+  color: #065f46;
+}
+.pf-alert-error {
+  background: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #dc2626;
+}
+.pf-alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+.pf-alert-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+.pf-alert-close:hover { opacity: 1; }
+
+/* ========== Two-Column Layout ========== */
+.pf-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .pf-layout { grid-template-columns: 1fr; }
+  .pf-sidebar { order: -1; }
+}
+.pf-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ========== Cards ========== */
+.pf-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+.pf-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(to right, #fafafa, white);
+}
+.pf-card-icon { font-size: 1.5rem; }
+.pf-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0a0a1a;
+  margin: 0 0 0.2rem;
+}
+.pf-card-sub {
+  color: #999;
+  font-size: 0.8rem;
+  margin: 0;
+}
+.pf-card-body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ========== Fields ========== */
+.pf-field { display: flex; flex-direction: column; gap: 0.45rem; }
+.pf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 600px) {
+  .pf-row { grid-template-columns: 1fr; }
+  .pf-container { padding: 0 1rem; }
+  .pf-card-body { padding: 1.25rem; }
+  .pf-page-title { font-size: 1.5rem; }
+}
+.pf-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #444;
+}
+.pf-req { color: #ef4444; }
+.pf-input {
+  border: 1.5px solid #e8e8e8;
+  border-radius: 11px;
+  padding: 0.78rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafafa;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.pf-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+  background: white;
+}
+.pf-input-error { border-color: #ef4444 !important; }
+.pf-textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.6;
+}
+.pf-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+.pf-error { font-size: 0.8rem; color: #ef4444; font-weight: 500; }
+.pf-hint { font-size: 0.8rem; color: #aaa; margin: 0; }
+
+/* Price input */
+.pf-price-wrap { position: relative; display: flex; align-items: center; }
+.pf-price-badge {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f59e0b;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.5px;
+}
+.pf-price-input { padding-left: 4rem; }
+
+/* ========== Actions ========== */
+.pf-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pf-btn-cancel {
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+  background: white;
+  color: #555;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.pf-btn-cancel:hover { background: #f5f5f5; border-color: #ccc; color: #333; }
+.pf-btn-submit {
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(245,158,11,0.35);
+}
+.pf-btn-submit:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245,158,11,0.45);
+}
+.pf-btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.pf-btn-loading { display: flex; align-items: center; gap: 0.5rem; }
+.pf-spinner {
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: pf-spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes pf-spin { to { transform: rotate(360deg); } }
+
+/* ========== Sidebar ========== */
+.pf-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.pf-tip-card, .pf-stat-card, .pf-checklist-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+}
+.pf-tip-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+.pf-tip-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0a0a1a;
+  margin: 0 0 0.75rem;
+}
+.pf-tip-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+.pf-tip-list li::before {
+  content: '→ ';
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+/* Stat Card */
+.pf-stat-card {
+  background: linear-gradient(135deg, #0a0a1a, #1a1a3e);
+  color: white;
+}
+.pf-stat-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.pf-stat { display: flex; flex-direction: column; }
+.pf-stat strong { font-size: 1.6rem; font-weight: 800; color: #f59e0b; }
+.pf-stat span { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+.pf-stat-desc { font-size: 0.8rem; color: rgba(255,255,255,0.55); margin: 0; line-height: 1.5; }
+
+/* Checklist Card */
+.pf-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.pf-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  color: #555;
+}
+.pf-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #aaa;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.pf-check-done {
+  background: #10b981;
+  color: white;
+}
+</style>

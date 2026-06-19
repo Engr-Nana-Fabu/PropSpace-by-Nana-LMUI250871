@@ -32,7 +32,7 @@
       <div class="ps-card-price">
         <span class="ps-card-price-label">{{ property.price < 20000 ? 'Per Month' : 'Asking Price' }}</span>
         <span class="ps-card-price-value">
-          R {{ property.price | number:'1.0-0' }}{{ property.price < 20000 ? '/mo' : '' }}
+          FCFA {{ property.price | number:'1.0-0' }}{{ property.price < 20000 ? '/mo' : '' }}
         </span>
       </div>
       <a href="#" class="ps-card-btn" id="view-{{ property._id }}">View →</a>

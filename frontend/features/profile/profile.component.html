@@ -1,58 +1,325 @@
-<div class="container mt-4">
-  <h2 class="mb-4">My Profile</h2>
-  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-  <div *ngIf="loading" class="alert alert-info">Loading profile...</div>
-  <div *ngIf="!loading" class="row">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">
-          <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item">
-              <a class="nav-link" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'" href="#">Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'" href="#">Change Password</a>
-            </li>
-          </ul>
-        </div>
-        <div class="card-body">
-          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" *ngIf="activeTab === 'profile'">
-            <div class="mb-3">
-              <label class="form-label">Username</label>
-              <input type="text" class="form-control" formControlName="username">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" [value]="user?.email" disabled>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Phone</label>
-              <input type="tel" class="form-control" formControlName="phone">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Avatar URL</label>
-              <input type="url" class="form-control" formControlName="avatar">
-            </div>
-            <button type="submit" class="btn btn-primary" [disabled]="updateLoading">
-              {{ updateLoading ? 'Updating...' : 'Update Profile' }}
-            </button>
-          </form>
-          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" *ngIf="activeTab === 'password'">
-            <div class="mb-3">
-              <label class="form-label">Current Password</label>
-              <input type="password" class="form-control" formControlName="oldPassword">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">New Password</label>
-              <input type="password" class="form-control" formControlName="newPassword">
-            </div>
-            <button type="submit" class="btn btn-primary" [disabled]="passwordLoading">
-              {{ passwordLoading ? 'Changing...' : 'Change Password' }}
-            </button>
-          </form>
-        </div>
-      </div>
+<!-- Navbar -->
+<nav class="dash-nav">
+  <div class="dash-nav-inner">
+    <a href="/" class="dash-brand">
+      <span>🏡</span>
+      <span class="dash-brand-name">PropSpace</span>
+    </a>
+    <div class="dash-nav-links">
+      <a routerLink="/properties" class="dash-nav-link">Browse</a>
+      <a routerLink="/my-listings" class="dash-nav-link">My Listings</a>
+      <a routerLink="/create-property" class="dash-nav-link dash-btn-create">+ New Listing</a>
+      <a routerLink="/profile" class="dash-nav-link active">Profile</a>
+      <a routerLink="/dashboard" class="dash-nav-link">Dashboard</a>
     </div>
   </div>
+</nav>
+
+<div class="profile-page">
+  <div class="profile-container">
+
+    <div class="profile-header">
+      <h1 class="profile-title">My Profile</h1>
+      <p class="profile-sub">Update your personal information and account settings</p>
+    </div>
+
+    <div *ngIf="successMessage" class="profile-alert alert-success">
+      <span>✅</span> {{ successMessage }}
+    </div>
+    <div *ngIf="error" class="profile-alert alert-danger">
+      <span>⚠️</span> {{ error }}
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="profile-loading">
+      <div class="profile-spinner"></div>
+      <p>Loading profile details...</p>
+    </div>
+
+    <div *ngIf="!loading" class="profile-card">
+      <div class="profile-card-header">
+        <button class="profile-tab-btn" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'; $event.preventDefault()">
+          👤 Profile Info
+        </button>
+        <button class="profile-tab-btn" [class.active]="activeTab === 'password'" (click)="activeTab = 'password'; $event.preventDefault()">
+          🔒 Change Password
+        </button>
+      </div>
+
+      <div class="profile-card-body">
+        <!-- Profile Form -->
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" *ngIf="activeTab === 'profile'" class="profile-form">
+          <div class="profile-avatar-preview-wrap" *ngIf="profileForm.get('avatar')?.value">
+            <img [src]="profileForm.get('avatar')?.value" alt="Avatar Preview" class="profile-avatar-preview" onerror="this.src='images/house-exterior.jpg'"/>
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label">Username</label>
+            <input type="text" class="profile-input" formControlName="username" placeholder="Username">
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label">Email Address (Cannot change)</label>
+            <input type="email" class="profile-input disabled-input" [value]="user?.email" disabled>
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label">Phone Number</label>
+            <input type="tel" class="profile-input" formControlName="phone" placeholder="e.g. +237 6xx xxx xxx">
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label">Avatar Image URL</label>
+            <input type="url" class="profile-input" formControlName="avatar" placeholder="https://example.com/avatar.jpg">
+          </div>
+
+          <button type="submit" class="profile-submit-btn" [disabled]="updateLoading">
+            <span *ngIf="!updateLoading">Update Profile →</span>
+            <span *ngIf="updateLoading">Updating...</span>
+          </button>
+        </form>
+
+        <!-- Password Form -->
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" *ngIf="activeTab === 'password'" class="profile-form">
+          <div class="profile-field">
+            <label class="profile-label">Current Password</label>
+            <input type="password" class="profile-input" formControlName="oldPassword" placeholder="••••••••">
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label">New Password</label>
+            <input type="password" class="profile-input" formControlName="newPassword" placeholder="At least 6 characters">
+          </div>
+
+          <button type="submit" class="profile-submit-btn" [disabled]="passwordLoading">
+            <span *ngIf="!passwordLoading">Change Password →</span>
+            <span *ngIf="passwordLoading">Changing...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<style>
+/* Reset and Container */
+.profile-page {
+  background: #f0f2f5;
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+}
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Navbar styles matching dashboard */
+.dash-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 20, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.dash-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-size: 1.3rem;
+}
+.dash-brand-name {
+  font-weight: 800;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dash-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.dash-nav-link {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.dash-nav-link:hover, .dash-nav-link.active { color: #f59e0b; }
+.dash-btn-create {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white !important;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-weight: 600;
+}
+
+/* Header */
+.profile-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.profile-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0a0a14;
+  margin: 0 0 0.5rem;
+}
+.profile-sub {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Card layout */
+.profile-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.profile-card-header {
+  display: flex;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+.profile-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  outline: none;
+}
+.profile-tab-btn:hover { color: #f59e0b; background: rgba(245,158,11,0.02); }
+.profile-tab-btn.active {
+  color: #f59e0b;
+  border-bottom-color: #f59e0b;
+  background: white;
+}
+.profile-card-body {
+  padding: 2.5rem 2rem;
+}
+
+/* Alerts */
+.profile-alert {
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+/* Form Styles */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.profile-avatar-preview-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.profile-avatar-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f59e0b;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.profile-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+.profile-input {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafafa;
+}
+.profile-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+  background: white;
+}
+.disabled-input {
+  background: #eee;
+  cursor: not-allowed;
+  color: #888;
+}
+.profile-submit-btn {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+.profile-submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.profile-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Loading States */
+.profile-loading {
+  text-align: center;
+  padding: 3rem 0;
+}
+.profile-spinner {
+  width: 40px; height: 40px;
+  border: 4px solid rgba(245,158,11,0.2);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .dash-nav-links { gap: 0.75rem; }
+  .profile-page { padding: 2rem 1rem; }
+}
+</style>

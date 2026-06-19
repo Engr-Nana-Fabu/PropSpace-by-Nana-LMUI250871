@@ -1,56 +1,508 @@
-<div class="container mt-4 mb-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h2>Edit Property</h2>
-      <p class="text-muted mb-0">Update listing details and save your changes.</p>
+<div class="ep-page">
+
+  <!-- Page Header -->
+  <div class="ep-header">
+    <div class="ep-header-content">
+      <div class="ep-header-left">
+        <a routerLink="/my-listings" class="ep-back-btn">
+          <span>←</span> My Listings
+        </a>
+        <div class="ep-breadcrumb">
+          <span>Edit Property</span>
+        </div>
+      </div>
+      <div class="ep-title-block">
+        <div class="ep-title-icon">✏️</div>
+        <div>
+          <h1 class="ep-page-title">Edit Property</h1>
+          <p class="ep-page-sub">Update your listing details and save changes</p>
+        </div>
+      </div>
     </div>
-    <a routerLink="/my-listings" class="btn btn-outline-secondary">Back to My Listings</a>
   </div>
 
-  <div *ngIf="loading" class="alert alert-info">Loading property...</div>
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-
-  <form *ngIf="!loading" [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-sm">
-    <div class="mb-3">
-      <label class="form-label">Title</label>
-      <input class="form-control" formControlName="title" placeholder="Property title" />
+  <!-- Alerts -->
+  <div class="ep-container">
+    <div *ngIf="loading && !propertyForm.dirty" class="ep-alert ep-alert-info">
+      <span class="ep-alert-icon">⏳</span>
+      <span>Loading property details...</span>
+    </div>
+    <div *ngIf="error" class="ep-alert ep-alert-error">
+      <span class="ep-alert-icon">⚠️</span>
+      <span>{{ error }}</span>
+      <button class="ep-alert-close" (click)="error = ''">✕</button>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Description</label>
-      <textarea class="form-control" rows="4" formControlName="description" placeholder="Describe the property"></textarea>
-    </div>
+    <!-- Form Card -->
+    <form *ngIf="!loading || propertyForm.dirty" [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="ep-form-layout">
 
-    <div class="row">
-      <div class="col-md-6 mb-3">
-        <label class="form-label">City</label>
-        <input class="form-control" formControlName="city" placeholder="City" />
-      </div>
-      <div class="col-md-6 mb-3">
-        <label class="form-label">Country</label>
-        <input class="form-control" formControlName="country" placeholder="Country" />
-      </div>
-    </div>
+      <!-- Main Form -->
+      <div class="ep-form-card">
+        <div class="ep-card-header">
+          <h2 class="ep-card-title">Property Details</h2>
+          <p class="ep-card-sub">Update the information below to modify your listing</p>
+        </div>
 
-    <div class="row">
-      <div class="col-md-6 mb-3">
-        <label class="form-label">Price</label>
-        <input class="form-control" type="number" formControlName="price" placeholder="0" />
-      </div>
-      <div class="col-md-6 mb-3">
-        <label class="form-label">Property Type</label>
-        <select class="form-select" formControlName="propertyType">
-          <option value="">Select type</option>
-          <option value="Apartment">Apartment</option>
-          <option value="House">House</option>
-          <option value="Townhouse">Townhouse</option>
-          <option value="Studio">Studio</option>
-        </select>
-      </div>
-    </div>
+        <div class="ep-card-body">
 
-    <button type="submit" class="btn btn-primary" [disabled]="propertyForm.invalid || loading">
-      Save Changes
-    </button>
-  </form>
+          <!-- Title -->
+          <div class="ep-field">
+            <label class="ep-label" for="ep-title">
+              <span class="ep-label-icon">🏠</span> Property Title
+              <span class="ep-required">*</span>
+            </label>
+            <input
+              id="ep-title"
+              type="text"
+              class="ep-input"
+              formControlName="title"
+              placeholder="e.g., Spacious 3-Bedroom Apartment in Yaoundé"
+              [class.ep-input-error]="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched"
+            />
+            <div class="ep-error-msg" *ngIf="propertyForm.get('title')?.invalid && propertyForm.get('title')?.touched">
+              Property title is required
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="ep-field">
+            <label class="ep-label" for="ep-desc">
+              <span class="ep-label-icon">📝</span> Description
+              <span class="ep-required">*</span>
+            </label>
+            <textarea
+              id="ep-desc"
+              class="ep-input ep-textarea"
+              rows="5"
+              formControlName="description"
+              placeholder="Describe the property, its features, nearby amenities..."
+              [class.ep-input-error]="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched"
+            ></textarea>
+            <div class="ep-error-msg" *ngIf="propertyForm.get('description')?.invalid && propertyForm.get('description')?.touched">
+              Description is required
+            </div>
+          </div>
+
+          <!-- City & Country Row -->
+          <div class="ep-row">
+            <div class="ep-field">
+              <label class="ep-label" for="ep-city">
+                <span class="ep-label-icon">📍</span> City
+                <span class="ep-required">*</span>
+              </label>
+              <input
+                id="ep-city"
+                type="text"
+                class="ep-input"
+                formControlName="city"
+                placeholder="e.g., Yaoundé, Douala, Bafoussam"
+                [class.ep-input-error]="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched"
+              />
+              <div class="ep-error-msg" *ngIf="propertyForm.get('city')?.invalid && propertyForm.get('city')?.touched">
+                City is required
+              </div>
+            </div>
+
+            <div class="ep-field">
+              <label class="ep-label" for="ep-country">
+                <span class="ep-label-icon">🌍</span> Country
+                <span class="ep-required">*</span>
+              </label>
+              <input
+                id="ep-country"
+                type="text"
+                class="ep-input"
+                formControlName="country"
+                placeholder="Cameroon"
+                [class.ep-input-error]="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched"
+              />
+              <div class="ep-error-msg" *ngIf="propertyForm.get('country')?.invalid && propertyForm.get('country')?.touched">
+                Country is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Price & Type Row -->
+          <div class="ep-row">
+            <div class="ep-field">
+              <label class="ep-label" for="ep-price">
+                <span class="ep-label-icon">💰</span> Price (FCFA)
+                <span class="ep-required">*</span>
+              </label>
+              <div class="ep-price-wrapper">
+                <span class="ep-price-prefix">FCFA</span>
+                <input
+                  id="ep-price"
+                  type="number"
+                  class="ep-input ep-input-price"
+                  formControlName="price"
+                  placeholder="0"
+                  [class.ep-input-error]="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched"
+                />
+              </div>
+              <div class="ep-error-msg" *ngIf="propertyForm.get('price')?.invalid && propertyForm.get('price')?.touched">
+                A valid price is required
+              </div>
+            </div>
+
+            <div class="ep-field">
+              <label class="ep-label" for="ep-type">
+                <span class="ep-label-icon">🏗️</span> Property Type
+                <span class="ep-required">*</span>
+              </label>
+              <select
+                id="ep-type"
+                class="ep-input ep-select"
+                formControlName="propertyType"
+                [class.ep-input-error]="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched"
+              >
+                <option value="">Select a type...</option>
+                <option value="Apartment">Apartment</option>
+                <option value="House">House</option>
+                <option value="Townhouse">Townhouse</option>
+                <option value="Studio">Studio</option>
+                <option value="Villa">Villa</option>
+                <option value="Land">Land</option>
+              </select>
+              <div class="ep-error-msg" *ngIf="propertyForm.get('propertyType')?.invalid && propertyForm.get('propertyType')?.touched">
+                Property type is required
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="ep-actions">
+        <a routerLink="/my-listings" class="ep-btn-cancel">
+          Cancel
+        </a>
+        <button
+          type="submit"
+          class="ep-btn-save"
+          [disabled]="propertyForm.invalid || loading"
+        >
+          <span *ngIf="!loading">💾 Save Changes</span>
+          <span *ngIf="loading" class="ep-btn-loading">
+            <span class="ep-btn-spinner"></span> Saving...
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
 </div>
+
+<style>
+/* ========== Page Layout ========== */
+.ep-page {
+  min-height: 100vh;
+  background: #f4f6fb;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* ========== Header ========== */
+.ep-header {
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0d1b4b 100%);
+  padding: 2rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.ep-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.1) 0%, transparent 60%);
+}
+.ep-header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.ep-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.ep-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+}
+.ep-back-btn:hover { color: #f59e0b; border-color: rgba(245,158,11,0.4); }
+.ep-breadcrumb {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8rem;
+}
+.ep-title-block {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.ep-title-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 12px rgba(245,158,11,0.4));
+}
+.ep-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.5px;
+}
+.ep-page-sub {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ========== Container ========== */
+.ep-container {
+  max-width: 900px;
+  margin: -1.5rem auto 3rem;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ========== Alerts ========== */
+.ep-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+.ep-alert-info {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  color: #1d4ed8;
+}
+.ep-alert-error {
+  background: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #dc2626;
+}
+.ep-alert-icon { font-size: 1.1rem; }
+.ep-alert-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+.ep-alert-close:hover { opacity: 1; }
+
+/* ========== Form Layout ========== */
+.ep-form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ========== Form Card ========== */
+.ep-form-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.ep-card-header {
+  padding: 1.75rem 2rem;
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(to right, #fafafa, white);
+}
+.ep-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0a0a1a;
+  margin: 0 0 0.25rem;
+}
+.ep-card-sub {
+  color: #888;
+  font-size: 0.875rem;
+  margin: 0;
+}
+.ep-card-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ========== Field ========== */
+.ep-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ep-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 600px) {
+  .ep-row { grid-template-columns: 1fr; gap: 1rem; }
+  .ep-container { padding: 0 1rem; }
+  .ep-card-body { padding: 1.25rem; }
+  .ep-header-content { padding: 0 1rem; }
+  .ep-page-title { font-size: 1.5rem; }
+}
+
+/* ========== Label ========== */
+.ep-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.ep-label-icon { font-size: 0.95rem; }
+.ep-required { color: #ef4444; margin-left: 0.15rem; }
+
+/* ========== Inputs ========== */
+.ep-input {
+  border: 1.5px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafafa;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ep-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
+  background: white;
+}
+.ep-input-error { border-color: #ef4444 !important; }
+.ep-textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+.ep-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+/* ========== Price Input ========== */
+.ep-price-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.ep-price-prefix {
+  position: absolute;
+  left: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f59e0b;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 0.5px;
+}
+.ep-input-price {
+  padding-left: 4rem;
+}
+
+/* ========== Error Message ========== */
+.ep-error-msg {
+  font-size: 0.8rem;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* ========== Action Buttons ========== */
+.ep-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.ep-btn-cancel {
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+  background: white;
+  color: #555;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.ep-btn-cancel:hover {
+  border-color: #ccc;
+  background: #f5f5f5;
+  color: #333;
+}
+.ep-btn-save {
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(245,158,11,0.35);
+}
+.ep-btn-save:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245,158,11,0.45);
+}
+.ep-btn-save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+.ep-btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ep-btn-spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: ep-spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes ep-spin { to { transform: rotate(360deg); } }
+</style>
