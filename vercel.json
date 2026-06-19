@@ -4,18 +4,8 @@
   "outputDirectory": "frontend/dist/frontend/browser",
   "rewrites": [
     {
-      "source": "/_/backend/:path*",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/((?!_/backend).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/index.js": {
-      "memory": 512,
-      "maxDuration": 30
-    }
-  }
+  ]
 }
